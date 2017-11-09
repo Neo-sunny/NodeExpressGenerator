@@ -21,7 +21,7 @@ const connect = mongoose.connect(url, {
     useMongoClient: true
 });
 connect.then((db) => {
-  console.log('connected to the db ');
+  console.log('connected to the Express server ');
 }, (err)=>{ console.log(err); });
 
 var app = express();
@@ -36,6 +36,33 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+function auth(req, res, next){
+  console.log(req.headers);
+  var authHeader= req.headers.authorization;
+      if(!authHeader){
+        var err=new Error("You are not authenticated ");
+        err.status=401;
+        res.setHeader('WWW-Authenticate', 'Basic');
+        return next(err);
+      }
+
+      var auth = new Buffer(authHeader.split(' ')[1], 'base64').toString().split(':');
+
+      var userName= auth[0];
+      var pass= auth[1];
+      if(userName== 'admin' && pass== 'password'){
+          next();
+      }else{
+        err = new Error("You are not authenticated ");
+        err.status=401;
+        res.setHeader('WWW-Authenticate', 'Basic');
+        return next(err);
+      }
+}
+
+app.use(auth);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
