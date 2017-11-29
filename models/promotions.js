@@ -1,21 +1,21 @@
 const moongoose =  require('mongoose');
-const Schema = mongoose.Schema;
-require('mongoose-currency').loadType(mongoose);
-var currency  = mongoose.Types.Currency;
+const Schema = moongoose.Schema;
+require('mongoose-currency').loadType(moongoose);
+var currency  = moongoose.Types.Currency;
 
 const promoSchema= new Schema({
     name:{
-        type:string,
+        type: String,
         required: true,
         unique: true
     },
     image:{
-        type:string,
+        type:String,
         required:true,
         unique: true
     },
     label:{
-        type:string,
+        type:String,
         required: true,
         unique: true
     },
@@ -25,7 +25,7 @@ const promoSchema= new Schema({
         min: 0
     },
     description:{
-        type:string,
+        type:String,
         required: true,
     },
     featured:{
@@ -36,6 +36,6 @@ const promoSchema= new Schema({
     timestamp:true
 })
 
-var Promos = mongoose.model('Promo', promoSchema);
+var Promos = moongoose.model('Promo', promoSchema);
 
 module.exports = Promos;

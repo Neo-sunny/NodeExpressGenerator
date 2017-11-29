@@ -1,27 +1,27 @@
 const moongoose =  require('mongoose');
-const Schema = mongoose.Schema;
+const Schema = moongoose.Schema;
 
 const leaderSchema= new Schema({
     name:{
-        type:string,
+        type:String,
         required: true,
         unique: true
     },
     image:{
-        type:string,
+        type:String,
         required:true,
         unique: true
     },
     designation:{
-        type:string,
+        type:String,
         required: true,
     },
     abbr:{
-        type:string,
+        type:String,
         required: true,
     },
     description:{
-        type:string,
+        type:String,
         required: true,
     },
     featured:{
@@ -32,6 +32,6 @@ const leaderSchema= new Schema({
     timestamp:true
 });
 
-var Leaders = mongoose.model('Leader', promoSchema);
+var Leaders = moongoose.model('Leader', leaderSchema);
 
 module.exports = Leaders;

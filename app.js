@@ -15,9 +15,9 @@ const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
 // what is the purpose here
-const Dishes = require('./models/dishes');
-const Promos = require('./models/promotions');
-const Leaders = require('./models/leaders');
+//const Dishes = require('./models/dishes');
+//const Promos = require('./models/promotions');
+//const Leaders = require('./models/leaders');
 
 
 const url ='mongodb://localhost:27017/conFusion';
@@ -39,8 +39,53 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('12345-67890-09876-54321'));
 
+
+function auth(req, res, next){
+  console.log(req.signedCookies);
+
+if(!req.signedCookies.user){ // If request does not contains signedCookies
+
+  // then go for Basic authentication
+    var authHeader= req.headers.authorization;
+    if(!authHeader){
+      var err=new Error("You are not authenticated ");
+      err.status=401;
+      res.setHeader('WWW-Authenticate', 'Basic');
+      return next(err);
+    }
+
+    var auth = new Buffer(authHeader.split(' ')[1], 'base64').toString().split(':');
+
+    var userName= auth[0];
+    var pass= auth[1];
+    if(userName== 'admin' && pass== 'password'){
+      res.cookie('user','admin',{signed:true});
+      next();
+    }else{
+      err = new Error("You are not authenticated ");
+      err.status=401;
+      res.setHeader('WWW-Authenticate', 'Basic');
+      return next(err);
+    }
+  }else{
+    if(req.signedCookies.user==='admin'){
+      next();
+    }else{
+      var err=new Error("You are not authenticated ");
+      err.status=401;
+      return next(err);
+    }
+  }
+  
+}
+
+
+
+
+
+/*
 function auth(req, res, next){
   console.log(req.headers);
   var authHeader= req.headers.authorization;
@@ -64,7 +109,7 @@ function auth(req, res, next){
         return next(err);
       }
 }
-
+*/
 app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));

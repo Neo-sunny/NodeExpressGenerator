@@ -15,14 +15,14 @@ leaderRouter.route('/')
     .then((leaders) =>{
         res.statusCode=200;
         res.setHeader('Content-Type','application/json');
-        res.json(promos);
+        res.json(leaders);
     }, (err)=> next(leaders))
     .catch((err)=> next(err));
 })
 .post( (req, res, next) => {
     _Leaders.create(req.body).
     then( (leader) => {
-        console.log('Promotion created ', promo);
+        console.log('Leader  created ', leader);
         res.statusCode=200;
         res.setHeader('Content-Type','application/json');
         res.json(leader);
