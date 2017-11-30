@@ -50,6 +50,8 @@ app.use(session({
   resave: false,
   store: new FileStore()
 }));
+app.use('/', index);
+app.use('/users', users);
 
 function auth(req, res, next){
   console.log(req.session);
@@ -57,14 +59,14 @@ function auth(req, res, next){
 if(!req.session.user){ // If request does not contains signedCookies
 
   // then go for Basic authentication
-    var authHeader= req.headers.authorization;
-    if(!authHeader){
+ //   var authHeader= req.headers.authorization;
+ //   if(!authHeader){
       var err=new Error("You are not authenticated ");
       err.status=401;
-      res.setHeader('WWW-Authenticate', 'Basic');
+//      res.setHeader('WWW-Authenticate', 'Basic');
       return next(err);
     }
-
+/*
     var auth = new Buffer(authHeader.split(' ')[1], 'base64').toString().split(':');
 
     var userName= auth[0];
@@ -77,9 +79,9 @@ if(!req.session.user){ // If request does not contains signedCookies
       err.status=401;
       res.setHeader('WWW-Authenticate', 'Basic');
       return next(err);
-    }
-  }else{
-    if(req.session.user === 'admin'){
+    }}*/
+  else{
+    if(req.session.user === 'authenticated'){
       next();
     }else{
       var err=new Error("You are not authenticated ");
@@ -163,7 +165,7 @@ app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
+
 app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
