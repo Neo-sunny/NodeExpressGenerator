@@ -28,8 +28,10 @@ router.post('/signup', function(req, res, next){
   }).then( (user) =>{
     res.statusCode= 200;
     res.setHeader('Content-Type', 'application/json');
+    console.log(user.username);
     //res.json({status: 'Registration successful! ', user: user}, (err) => next(err));
-    res.status(200).json({status: 'Registration successful! ', user: user}, (err) => next(err));
+    //res.status(200).json({status: 'Registration successful! ', user: user}, (err) => next(err));
+    res.status(200).json(user);
   } )
  .catch((err) => next(err));
 });

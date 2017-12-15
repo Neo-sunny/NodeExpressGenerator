@@ -16,11 +16,6 @@ var leaderRouter = require('./routes/leaderRouter');
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
-// what is the purpose here
-//const Dishes = require('./models/dishes');
-//const Promos = require('./models/promotions');
-//const Leaders = require('./models/leaders');
-
 
 const url ='mongodb://localhost:27017/conFusion';
 const connect = mongoose.connect(url, {
@@ -31,6 +26,18 @@ connect.then((db) => {
 }, (err)=>{ console.log(err); });
 
 var app = express();
+
+// redirecting all requests to particular url
+app.all('*', (req, res, next) =>{
+  if(req.secure){
+    next();
+  }else{
+    res.redirect(307,'https://' +req.hostname+':'+app.get('secPort')+req.url);
+
+  }
+});
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
